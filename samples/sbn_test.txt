@@ -1,0 +1,12 @@
+A = conf 0.99       # Agent declaration. A is a conformist agent with theta=0.99
+B = conf 1
+C = conf 1
+D = conf 1
+
+# Another comment example
+
+
+A <- B C D          # Graph edges declaration. Here, agent A's decision depends on desicions of agents B, C and D
+B <- C D
+C <- D
+D <- A B C
