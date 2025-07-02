@@ -2,17 +2,22 @@ import math
 import random
 
 import numpy as np
-from networkx import gnp_random_graph, gnm_random_graph, watts_strogatz_graph, barabasi_albert_graph
+from networkx import (
+    gnp_random_graph,
+    gnm_random_graph,
+    watts_strogatz_graph,
+    barabasi_albert_graph,
+)
 from scipy.sparse import csr_matrix
 
 
 class DLTM:
 
     def __init__(self):
-        self.agents = {}        # agent_id -> theta
-        self.graph = {}         # agent_id_from -> [list of agent_id_to]
-        self.graph_inv = {}     # agent_id_to -> [list of agent_id_from]
-        self.infl = {}          # (agent_id_from, agent_id_to) -> influence
+        self.agents = {}  # agent_id -> theta
+        self.graph = {}  # agent_id_from -> [list of agent_id_to]
+        self.graph_inv = {}  # agent_id_to -> [list of agent_id_from]
+        self.infl = {}  # (agent_id_from, agent_id_to) -> influence
 
         self.ord_to_agent = []  # ordinal (number in [0;n) range) -> agent_id
         self.agent_to_ord = {}  # agent_id -> ordinal
@@ -87,7 +92,9 @@ class DLTM:
             for line in f.readlines():
                 line_args = line.split()
                 if len(line_args) == 1:
-                    raise ValueError('Expected at least 2 values, got only one: {}'.format(line))
+                    raise ValueError(
+                        "Expected at least 2 values, got only one: {}".format(line)
+                    )
                 self.put_agent(line_args[0], 0)
                 self.put_agent(line_args[1], 0)
                 self.add_edge(line_args[0], line_args[1], 0)
@@ -117,7 +124,7 @@ class DLTM:
         random.seed(seed)
         theta = theta_generator(random)
         if theta < 0 or theta > 1:
-            raise ValueError('theta must be in [0;1] range')
+            raise ValueError("theta must be in [0;1] range")
 
         for a in self.agents.keys():
             self.agents[a] = 0
@@ -131,8 +138,10 @@ class DLTM:
         return self.generate_thresholds(lambda r: theta, None)
 
     def generate_uniformly_random_thresholds(self, theta_from, theta_to, seed=None):
-        return self.generate_thresholds(lambda r: theta_from + r.random() * (theta_to - theta_from), seed)
-    
+        return self.generate_thresholds(
+            lambda r: theta_from + r.random() * (theta_to - theta_from), seed
+        )
+
     def to_compress_graph(self, with_weight=False):
         # Находим количество узлов в графе
         nodes = list(self.agents.keys())
@@ -175,19 +184,35 @@ def read_dltm(path):
             if len(line_args) == 0:
                 continue
             if len(line_args) == 1:
-                raise ValueError("Too few arguments, expected either agent or edge declaration, got {}".format(line_content))
+                raise ValueError(
+                    "Too few arguments, expected either agent or edge declaration, got {}".format(
+                        line_content
+                    )
+                )
             else:
-                if line_args[0] in ['a', 'A']:
+                if line_args[0] in ["a", "A"]:
                     if len(line_args) < 3:
-                        raise ValueError("Too few arguments at agent declaration. Expected 'a <agent_id> <theta>', got {}".format(line_content))
+                        raise ValueError(
+                            "Too few arguments at agent declaration. Expected 'a <agent_id> <theta>', got {}".format(
+                                line_content
+                            )
+                        )
                     dltm.put_agent(line_args[1], int(line_args[2]))
                 else:
-                    if line_args[0] in ['i', 'I']:
+                    if line_args[0] in ["i", "I"]:
                         if len(line_args) < 4:
-                            raise ValueError("Too few arguments at edge declaration. Expected 'i <agent_from_id> <agent_to_id> <influence>', got {}".format(line_content))
+                            raise ValueError(
+                                "Too few arguments at edge declaration. Expected 'i <agent_from_id> <agent_to_id> <influence>', got {}".format(
+                                    line_content
+                                )
+                            )
                         dltm.add_edge(line_args[1], line_args[2], int(line_args[3]))
                     else:
-                        raise ValueError("Expected either agent declaration ('a agent1 = ...') or edge ('i agent1 agnet2 ...'), got {}".format(line_content))
+                        raise ValueError(
+                            "Expected either agent declaration ('a agent1 = ...') or edge ('i agent1 agnet2 ...'), got {}".format(
+                                line_content
+                            )
+                        )
 
         return dltm
 
