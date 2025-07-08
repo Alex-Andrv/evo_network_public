@@ -24,6 +24,14 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+5) Run generator scripts:
+
+```
+python generate_sensitivity_analysis.py
+python generate-evaluation-(1+1)-WEA.py
+python generate-evaluation-(1+1)-WEA.py
+```
+
 ## Reproducing the Experiments
 Once the datasets are generated, run the provided experiment launchers to reproduce the results.
 
